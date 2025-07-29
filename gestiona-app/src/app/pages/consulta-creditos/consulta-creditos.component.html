@@ -1,0 +1,190 @@
+<div class="consulta-creditos-container p-4">
+  <!-- Breadcrumbs -->
+  <p-breadcrumb 
+    [model]="breadcrumbItems" 
+    homeIcon="pi pi-home" 
+    styleClass="mb-4">
+  </p-breadcrumb>
+
+  <!-- Título da Página -->
+  <div class="text-center mb-4">
+    <h1 class="text-4xl font-bold text-primary mb-2">
+      <i class="pi pi-credit-card mr-2"></i>
+      Consulta de Créditos ISSQN
+    </h1>
+    <p class="text-lg text-600">
+      Consulte seus créditos de forma prática e rápida
+    </p>
+  </div>
+
+  <!-- Painel de Filtros -->
+  <p-panel header="Nova Consulta" [toggleable]="true" [collapsed]="false" styleClass="mb-4 shadow-2">
+    <form [formGroup]="form" (ngSubmit)="consultarCreditos()">
+
+      <!-- Tipo de Consulta -->
+      <div class="field mb-4">
+        <label class="block font-medium mb-2 text-900">Tipo de Consulta</label>
+        <div class="flex flex-column gap-3">
+          <div *ngFor="let tipo of tiposConsulta" class="field-radiobutton">
+            <p-radioButton 
+              [inputId]="tipo.value" 
+              name="tipoConsulta" 
+              [value]="tipo.value" 
+              formControlName="tipoConsulta">
+            </p-radioButton>
+            <label [for]="tipo.value" class="ml-2">
+              <i [class]="tipo.icon" class="mr-2 text-primary"></i>
+              {{ tipo.label }}
+              <small class="block text-600">{{ tipo.description }}</small>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Campo de Busca -->
+      <div class="field mb-4">
+        <label class="block font-medium mb-2 text-900">
+          {{ tipoConsultaAtual.label }}
+        </label>
+        <div class="p-inputgroup">
+          <span class="p-inputgroup-addon">
+            <i [class]="tipoConsultaAtual.icon"></i>
+          </span>
+          <input type="text" 
+                 pInputText 
+                 formControlName="valorBusca"
+                 [placeholder]="tipoConsultaAtual.placeholder"
+                 [disabled]="carregando"
+                 (keyup.enter)="consultarCreditos()"
+                 class="w-full" />
+          <p-button 
+            label="Consultar"
+            icon="pi pi-search"
+            [loading]="carregando"
+            type="submit"
+            [disabled]="!form.get('valorBusca')?.value?.trim()"
+            styleClass="p-button-primary">
+          </p-button>
+        </div>
+      </div>
+
+      <div *ngIf="form.get('valorBusca')?.value || creditos.length > 0 || creditoSelecionado">
+        <p-button 
+          label="Limpar Consulta"
+          icon="pi pi-trash"
+          severity="secondary"
+          [outlined]="true"
+          (onClick)="limparConsulta()">
+        </p-button>
+      </div>
+    </form>
+  </p-panel>
+
+  <!-- Toast -->
+  <p-toast position="top-right" [life]="5000"></p-toast>
+
+  <!-- Spinner -->
+  <div class="text-center p-4" *ngIf="carregando">
+    <p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="4"></p-progressSpinner>
+    <p class="text-600 mt-3 text-lg">Consultando créditos...</p>
+  </div>
+
+  <!-- Resultados da Consulta -->
+  <p-card *ngIf="creditos.length > 0" class="mb-4 shadow-2">
+    <ng-template pTemplate="header">
+      <div class="flex justify-content-between align-items-center">
+        <h2 class="text-xl font-semibold m-0">
+          <i class="pi pi-list mr-2"></i> Créditos Encontrados
+        </h2>
+        <p-tag [value]="creditos.length + ' resultado(s)'" severity="success" rounded></p-tag>
+      </div>
+    </ng-template>
+
+    <ng-template pTemplate="content">
+      <p-table 
+        [value]="creditos"
+        [scrollable]="true"
+        styleClass="p-datatable-striped"
+        [tableStyle]="{ 'min-width': '50rem' }">
+        <ng-template pTemplate="header">
+          <tr>
+            <th *ngFor="let col of colunas" class="text-center" [style.width]="col.width">
+              {{ col.header }}
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-credito>
+          <tr>
+            <td class="text-center">
+              <p-tag [value]="credito.numeroCredito" severity="info" rounded></p-tag>
+            </td>
+            <td class="text-center">{{ credito.numeroNfse }}</td>
+            <td class="text-center">{{ formatarData(credito.dataConstituicao) }}</td>
+            <td class="text-center text-green-600 font-semibold">{{ formatarMoeda(credito.valorIssqn) }}</td>
+            <td class="text-center">
+              <p-tag [value]="credito.tipoCredito" [severity]="getSeveridadeTipoCredito(credito.tipoCredito)" rounded></p-tag>
+            </td>
+            <td class="text-center">
+              <p-tag [value]="credito.simplesNacional" [severity]="getSeveridadeSimplesNacional(credito.simplesNacional)" rounded></p-tag>
+            </td>
+            <td class="text-center">{{ formatarPercentual(credito.aliquota) }}</td>
+            <td class="text-center text-blue-600 font-semibold">{{ formatarMoeda(credito.baseCalculo) }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </ng-template>
+  </p-card>
+
+  <!-- Detalhes do Crédito -->
+  <p-card *ngIf="creditoSelecionado" class="mb-4 shadow-2">
+    <ng-template pTemplate="header">
+      <div class="flex justify-content-between align-items-center">
+        <h3 class="text-xl font-semibold text-white">
+          <i class="pi pi-eye mr-2"></i> Detalhes do Crédito
+        </h3>
+        <p-tag [value]="creditoSelecionado.tipoCredito" severity="info" rounded></p-tag>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="content">
+      <div class="grid">
+        <div class="col-12 md:col-4">
+          <label class="text-600 font-medium">NFS-e</label>
+          <div class="font-semibold">{{ creditoSelecionado.numeroNfse }}</div>
+        </div>
+        <div class="col-12 md:col-4">
+          <label class="text-600 font-medium">Data Constituição</label>
+          <div>{{ formatarData(creditoSelecionado.dataConstituicao) }}</div>
+        </div>
+        <div class="col-12 md:col-4">
+          <label class="text-600 font-medium">Valor ISSQN</label>
+          <div class="text-green-600 font-bold">{{ formatarMoeda(creditoSelecionado.valorIssqn) }}</div>
+        </div>
+        <div class="col-12 md:col-4">
+          <label class="text-600 font-medium">Simples Nacional</label>
+          <p-tag [value]="creditoSelecionado.simplesNacional" [severity]="getSeveridadeSimplesNacional(creditoSelecionado.simplesNacional)" rounded></p-tag>
+        </div>
+        <div class="col-12 md:col-4">
+          <label class="text-600 font-medium">Alíquota</label>
+          <div>{{ formatarPercentual(creditoSelecionado.aliquota) }}</div>
+        </div>
+        <div class="col-12 md:col-4">
+          <label class="text-600 font-medium">Valor Faturado</label>
+          <div class="text-blue-600 font-semibold">{{ formatarMoeda(creditoSelecionado.valorFaturado) }}</div>
+        </div>
+        <div class="col-12 md:col-4">
+          <label class="text-600 font-medium">Valor Dedução</label>
+          <div class="text-red-600 font-semibold">{{ formatarMoeda(creditoSelecionado.valorDeducao) }}</div>
+        </div>
+        <div class="col-12 md:col-4">
+          <label class="text-600 font-medium">Base de Cálculo</label>
+          <div class="text-purple-600 font-bold">{{ formatarMoeda(creditoSelecionado.baseCalculo) }}</div>
+        </div>
+      </div>
+    </ng-template>
+  </p-card>
+
+  <!-- Footer -->
+  <div class="text-center text-600 text-sm mt-6 border-top-1 pt-3">
+    © 2025 Gestão ISSQN - Todos os direitos reservados.
+  </div>
+</div>

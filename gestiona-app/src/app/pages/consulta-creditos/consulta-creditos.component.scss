@@ -1,0 +1,456 @@
+// consulta-creditos.component.scss
+
+.consulta-creditos-container {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+  padding: 1.5rem;
+
+  // Breadcrumb customizado
+  ::ng-deep .p-breadcrumb {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+
+    .p-breadcrumb-list {
+      padding: 0.75rem 1rem;
+      
+      .p-menuitem-link {
+        color: #6366f1 !important;
+        font-weight: 500;
+        text-decoration: none !important;
+        
+        &:hover {
+          color: #4f46e5 !important;
+        }
+      }
+      
+      .p-menuitem-separator {
+        color: #9ca3af;
+        margin: 0 0.5rem;
+      }
+    }
+  }
+
+  // Título da página
+  h1 {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 0.5rem;
+    
+    i {
+      color: #6366f1;
+      -webkit-text-fill-color: #6366f1;
+    }
+  }
+
+  .text-600 {
+    color: #6b7280 !important;
+    font-size: 1.1rem;
+    font-weight: 400;
+  }
+
+  // Panel customizado
+  ::ng-deep .p-panel {
+    border-radius: 16px;
+    border: none;
+    overflow: hidden;
+    
+    .p-panel-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 1.25rem 1.5rem;
+      border: none;
+      
+      .p-panel-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        letter-spacing: 0.025em;
+      }
+      
+      .p-panel-header-icon {
+        color: white;
+        width: 2rem;
+        height: 2rem;
+        
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.1);
+        }
+      }
+    }
+    
+    .p-panel-content {
+      background: white;
+      padding: 2rem;
+      border: none;
+    }
+  }
+
+  // Form styling
+  .field {
+    margin-bottom: 1.5rem;
+    
+    label {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+  }
+
+  // Radio buttons customizados
+  ::ng-deep .p-radiobutton {
+    .p-radiobutton-box {
+      border: 2px solid #d1d5db;
+      background: white;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+      }
+      
+      &.p-highlight {
+        border-color: #6366f1;
+        background: #6366f1;
+        
+        .p-radiobutton-icon {
+          background-color: white;
+        }
+      }
+    }
+  }
+
+  .field-radiobutton {
+    padding: 1rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    background: white;
+    
+    &:hover {
+      border-color: #6366f1;
+      background: #f8faff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.1);
+    }
+    
+    label {
+      cursor: pointer;
+      display: block;
+      margin: 0;
+      
+      i {
+        font-size: 1.1rem;
+      }
+      
+      small {
+        font-size: 0.85rem;
+        color: #6b7280;
+        margin-top: 0.25rem;
+      }
+    }
+  }
+
+  // Input group customizado
+  ::ng-deep .p-inputgroup {
+    .p-inputgroup-addon {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 0 1rem;
+      
+      i {
+        font-size: 1.1rem;
+      }
+    }
+    
+    .p-inputtext {
+      border: 2px solid #e5e7eb;
+      border-left: none;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      
+      &:focus {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+      }
+      
+      &:disabled {
+        background: #f9fafb;
+      }
+    }
+  }
+
+  // Buttons
+  ::ng-deep .p-button {
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease;
+    
+    &.p-button-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+      }
+      
+      &:active {
+        transform: translateY(0);
+      }
+    }
+    
+    &.p-button-secondary {
+      background: white;
+      color: #6b7280;
+      border: 2px solid #e5e7eb;
+      
+      &:hover {
+        background: #f9fafb;
+        border-color: #d1d5db;
+        transform: translateY(-1px);
+      }
+    }
+  }
+
+  // Cards
+  ::ng-deep .p-card {
+    border-radius: 16px;
+    border: none;
+    overflow: hidden;
+    
+    .p-card-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 1.25rem 1.5rem;
+      
+      h2, h3 {
+        color: white;
+        margin: 0;
+        font-weight: 600;
+        
+        i {
+          color: white;
+        }
+      }
+    }
+    
+    .p-card-content {
+      padding: 2rem;
+      background: white;
+    }
+  }
+
+  // Table customizada
+  ::ng-deep .p-datatable {
+    .p-datatable-header {
+      background: #f8fafc;
+      border: none;
+      padding: 1rem;
+      border-radius: 12px 12px 0 0;
+    }
+    
+    .p-datatable-thead > tr > th {
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      color: #374151;
+      font-weight: 600;
+      border: none;
+      padding: 1rem 0.75rem;
+      
+      &:first-child {
+        border-radius: 12px 0 0 0;
+      }
+      
+      &:last-child {
+        border-radius: 0 12px 0 0;
+      }
+    }
+    
+    .p-datatable-tbody > tr {
+      transition: all 0.2s ease;
+      
+      &:hover {
+        background: #f8faff !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      }
+      
+      > td {
+        border: none;
+        padding: 1rem 0.75rem;
+        border-bottom: 1px solid #f1f5f9;
+        
+        &:first-child {
+          border-left: 3px solid transparent;
+        }
+      }
+      
+      &:nth-child(even) {
+        background: rgba(248, 250, 252, 0.5);
+      }
+    }
+  }
+
+  // Tags customizadas
+  ::ng-deep .p-tag {
+    border-radius: 20px;
+    font-weight: 500;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    
+    &.p-tag-success {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+    
+    &.p-tag-info {
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    }
+    
+    &.p-tag-warning {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    }
+  }
+
+  // Progress spinner
+  ::ng-deep .p-progress-spinner {
+    .p-progress-spinner-circle {
+      stroke: #6366f1;
+      animation: p-progress-spinner-color 6s ease-in-out infinite;
+    }
+  }
+  
+  @keyframes p-progress-spinner-color {
+    100%, 0% {
+      stroke: #6366f1;
+    }
+    40% {
+      stroke: #8b5cf6;
+    }
+    66% {
+      stroke: #06b6d4;
+    }
+    80%, 90% {
+      stroke: #10b981;
+    }
+  }
+
+  // Toast customizado
+  ::ng-deep .p-toast {
+    .p-toast-message {
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+      
+      &.p-toast-message-success {
+        background: rgba(16, 185, 129, 0.95);
+      }
+      
+      &.p-toast-message-info {
+        background: rgba(59, 130, 246, 0.95);
+      }
+      
+      &.p-toast-message-warn {
+        background: rgba(245, 158, 11, 0.95);
+      }
+      
+      &.p-toast-message-error {
+        background: rgba(239, 68, 68, 0.95);
+      }
+    }
+  }
+
+  // Grid para detalhes
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+    
+    > div {
+      background: rgba(248, 250, 252, 0.5);
+      padding: 1rem;
+      border-radius: 8px;
+      border-left: 4px solid #6366f1;
+      
+      label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
+        margin-bottom: 0.25rem;
+        display: block;
+      }
+      
+      > div {
+        font-size: 1rem;
+        font-weight: 500;
+        color: #111827;
+      }
+    }
+  }
+
+  // Footer
+  .border-top-1 {
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-top: 2rem;
+  }
+
+  // Responsive
+  @media (max-width: 768px) {
+    padding: 1rem;
+    
+    h1 {
+      font-size: 2rem;
+    }
+    
+    .grid {
+      grid-template-columns: 1fr;
+    }
+    
+    ::ng-deep .p-panel-content,
+    ::ng-deep .p-card-content {
+      padding: 1.5rem;
+    }
+  }
+}
+
+// Animações
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.consulta-creditos-container > * {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.consulta-creditos-container > *:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.consulta-creditos-container > *:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.consulta-creditos-container > *:nth-child(4) {
+  animation-delay: 0.3s;
+}

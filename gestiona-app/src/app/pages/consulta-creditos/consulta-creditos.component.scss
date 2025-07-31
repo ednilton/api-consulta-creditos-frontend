@@ -198,14 +198,17 @@
     &.p-button-primary {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       border: none;
+      color: white !important; // ✅ Força texto branco
       
       &:hover {
         transform: translateY(-2px);
         box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        color: white !important; // ✅ Mantém branco no hover
       }
       
       &:active {
         transform: translateY(0);
+        color: white !important; // ✅ Mantém branco no active
       }
     }
     
@@ -234,12 +237,12 @@
       padding: 1.25rem 1.5rem;
       
       h2, h3 {
-        color: white;
+        color: white !important; // ✅ Força texto branco
         margin: 0;
         font-weight: 600;
         
         i {
-          color: white;
+          color: white !important; // ✅ Ícones brancos
         }
       }
     }
@@ -300,23 +303,38 @@
     }
   }
 
-  // Tags customizadas
+  // ✅ Tags customizadas com contraste corrigido
   ::ng-deep .p-tag {
     border-radius: 20px;
-    font-weight: 500;
+    font-weight: 600 !important; // ✅ Texto mais bold
     padding: 0.4rem 0.8rem;
     font-size: 0.85rem;
+    color: white !important; // ✅ Força texto branco sempre
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); // ✅ Sombra para melhor legibilidade
     
     &.p-tag-success {
       background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white !important; // ✅ Texto branco no verde
     }
     
     &.p-tag-info {
       background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      color: white !important; // ✅ Texto branco no azul
     }
     
     &.p-tag-warning {
       background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: white !important; // ✅ Texto branco no amarelo
+    }
+    
+    &.p-tag-warn {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: white !important; // ✅ Texto branco no warn
+    }
+    
+    // ✅ Garantia extra para todos os elementos dentro da tag
+    * {
+      color: white !important;
     }
   }
 
@@ -343,26 +361,63 @@
     }
   }
 
-  // Toast customizado
+  // Toast customizado com contraste corrigido
   ::ng-deep .p-toast {
     .p-toast-message {
       border-radius: 12px;
       backdrop-filter: blur(10px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      
+      // ✅ Força texto branco em todos os elementos do toast
+      * {
+        color: white !important;
+      }
+      
+      .p-toast-message-content {
+        color: white !important;
+        
+        .p-toast-summary {
+          color: white !important;
+          font-weight: 600 !important;
+          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        
+        .p-toast-detail {
+          color: rgba(255, 255, 255, 0.95) !important;
+          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+      }
+      
+      .p-toast-icon {
+        color: white !important;
+      }
+      
+      .p-toast-icon-close {
+        color: white !important;
+        
+        &:hover {
+          background: rgba(255, 255, 255, 0.1) !important;
+        }
+      }
       
       &.p-toast-message-success {
-        background: rgba(16, 185, 129, 0.95);
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        border-left: 4px solid #065f46;
       }
       
       &.p-toast-message-info {
-        background: rgba(59, 130, 246, 0.95);
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        border-left: 4px solid #1e3a8a;
       }
       
       &.p-toast-message-warn {
-        background: rgba(245, 158, 11, 0.95);
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        border-left: 4px solid #92400e;
       }
       
       &.p-toast-message-error {
-        background: rgba(239, 68, 68, 0.95);
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        border-left: 4px solid #991b1b;
       }
     }
   }
@@ -394,6 +449,12 @@
         font-size: 1rem;
         font-weight: 500;
         color: #111827;
+      }
+      
+      // ✅ Tags dentro do grid também ficam com texto branco
+      ::ng-deep .p-tag {
+        color: white !important;
+        font-weight: 600 !important;
       }
     }
   }

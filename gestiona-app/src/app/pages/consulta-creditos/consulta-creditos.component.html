@@ -32,10 +32,14 @@
               [value]="tipo.value" 
               formControlName="tipoConsulta">
             </p-radioButton>
-            <label [for]="tipo.value" class="ml-2">
-              <i [class]="tipo.icon" class="mr-2 text-primary"></i>
-              {{ tipo.label }}
-              <small class="block text-600">{{ tipo.description }}</small>
+            <label [for]="tipo.value" class="ml-2 cursor-pointer">
+              <div class="flex flex-column">
+                <div class="flex align-items-center">
+                  <i [class]="tipo.icon" class="mr-2 text-primary"></i>
+                  <span class="font-medium">{{ tipo.label }}</span>
+                </div>
+                <small class="block text-600 ml-5">{{ tipo.description }}</small>
+              </div>
             </label>
           </div>
         </div>
@@ -50,13 +54,14 @@
           <span class="p-inputgroup-addon">
             <i [class]="tipoConsultaAtual.icon"></i>
           </span>
-          <input type="text" 
-                 pInputText 
-                 formControlName="valorBusca"
-                 [placeholder]="tipoConsultaAtual.placeholder"
-                 [disabled]="carregando"
-                 (keyup.enter)="consultarCreditos()"
-                 class="w-full" />
+          <input
+            type="text"
+            pInputText
+            formControlName="valorBusca"
+            [placeholder]="tipoConsultaAtual.placeholder"
+            (keyup.enter)="consultarCreditos()"
+            class="w-full"
+          />
           <p-button 
             label="Consultar"
             icon="pi pi-search"
@@ -125,7 +130,11 @@
               <p-tag [value]="credito.tipoCredito" [severity]="getSeveridadeTipoCredito(credito.tipoCredito)" rounded></p-tag>
             </td>
             <td class="text-center">
-              <p-tag [value]="credito.simplesNacional" [severity]="getSeveridadeSimplesNacional(credito.simplesNacional)" rounded></p-tag>
+              <p-tag 
+                [value]="credito.simplesNacional ? 'Sim' : 'Não'" 
+                [severity]="getSeveridadeSimplesNacional(credito.simplesNacional)"  
+                rounded>
+              </p-tag>
             </td>
             <td class="text-center">{{ formatarPercentual(credito.aliquota) }}</td>
             <td class="text-center text-blue-600 font-semibold">{{ formatarMoeda(credito.baseCalculo) }}</td>
@@ -161,7 +170,11 @@
         </div>
         <div class="col-12 md:col-4">
           <label class="text-600 font-medium">Simples Nacional</label>
-          <p-tag [value]="creditoSelecionado.simplesNacional" [severity]="getSeveridadeSimplesNacional(creditoSelecionado.simplesNacional)" rounded></p-tag>
+          <p-tag 
+            [value]="creditoSelecionado.simplesNacional ? 'Sim' : 'Não'" 
+            [severity]="getSeveridadeSimplesNacional(creditoSelecionado.simplesNacional)" 
+            rounded>
+          </p-tag>        
         </div>
         <div class="col-12 md:col-4">
           <label class="text-600 font-medium">Alíquota</label>

@@ -3,10 +3,10 @@ import {
   ChangeDetectionStrategy,
   inject,
   OnInit,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
-
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 
 import { CardModule } from 'primeng/card';
@@ -21,26 +21,8 @@ import { MessageModule } from 'primeng/message';
 import { PanelModule } from 'primeng/panel';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 
-export interface Credito {
-  numeroCredito: string;
-  numeroNfse: string;
-  dataConstituicao: string;
-  valorIssqn: number;
-  tipoCredito: string;
-  simplesNacional: string;
-  aliquota: number;
-  valorFaturado: number;
-  valorDeducao: number;
-  baseCalculo: number;
-}
-
-export interface TipoConsulta {
-  label: string;
-  value: 'nfse' | 'credito';
-  description: string;
-  placeholder: string;
-  icon: string;
-}
+import { CreditoService } from '../../services/credito.service';
+import { Credito, TipoConsulta } from '../../models/credito.model';
 
 @Component({
   selector: 'app-consulta-creditos',
@@ -68,6 +50,8 @@ export interface TipoConsulta {
 export class ConsultaCreditosComponent implements OnInit {
   private fb = inject(FormBuilder);
   private messageService = inject(MessageService);
+  private creditoService = inject(CreditoService);
+  private cdr = inject(ChangeDetectorRef); // ✅ Para forçar detecção de mudanças
 
   form!: FormGroup;
   creditos: Credito[] = [];
@@ -107,32 +91,17 @@ export class ConsultaCreditosComponent implements OnInit {
     { field: 'baseCalculo', header: 'Base Cálculo', width: '130px' },
   ];
 
-  creditosMock: Credito[] = [
-    {
-      numeroCredito: '123456',
-      numeroNfse: '7891011',
-      dataConstituicao: '2023-06-15',
-      valorIssqn: 1200.5,
-      tipoCredito: 'ISSQN',
-      simplesNacional: 'Sim',
-      aliquota: 5,
-      valorFaturado: 24000,
-      valorDeducao: 1000,
-      baseCalculo: 23000
-    }
-  ];
-
   ngOnInit(): void {
     this.form = this.fb.group({
       tipoConsulta: ['nfse'],
-      valorBusca: [''],
+      valorBusca: ['', Validators.required],
     });
   }
 
   get tipoConsultaAtual(): TipoConsulta {
     return this.tiposConsulta.find(
-      (tipo) => tipo.value === this.form.value.tipoConsulta
-    )!;
+      tipo => tipo.value === this.form.value.tipoConsulta
+    ) ?? this.tiposConsulta[0];
   }
 
   consultarCreditos(): void {
@@ -146,55 +115,101 @@ export class ConsultaCreditosComponent implements OnInit {
       return;
     }
 
+    console.log('🚀 Iniciando consulta:', valor);
+    
     this.carregando = true;
     this.creditos = [];
     this.creditoSelecionado = null;
-    this.form.get('valorBusca')?.disable();
+    this.cdr.detectChanges(); // ✅ Força atualização da tela
+
+    this.bloquearCampoBusca();
     this.messageService.clear();
 
-    setTimeout(() => {
-      try {
-        const tipo = this.form.value.tipoConsulta;
-        tipo === 'nfse'
-          ? this.consultarPorNfse(valor)
-          : this.consultarPorCredito(valor);
-      } catch {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Erro',
-          detail: 'Erro ao consultar créditos.',
-        });
-      } finally {
-        this.carregando = false;
-        this.form.get('valorBusca')?.enable();
-      }
-    }, 1500);
+    const tipo = this.form.value.tipoConsulta;
+    
+    if (tipo === 'nfse') {
+      this.consultarPorNfse(valor);
+    } else {
+      this.consultarPorCredito(valor);
+    }
   }
 
   consultarPorNfse(valor: string): void {
-    const resultados = this.creditosMock.filter(
-      (c) => c.numeroNfse === valor
-    );
-    resultados.length
-      ? (this.creditos = resultados)
-      : this.messageService.add({
-          severity: 'info',
-          summary: 'Nenhum resultado encontrado',
-          detail: `Nenhum crédito encontrado para a NFS-e: ${valor}`,
+    console.log('🔍 Consultando por NFS-e:', valor);
+
+    this.creditoService.buscarPorNfse(valor).subscribe({
+      next: (creditos) => {
+        console.log('✅ Resposta recebida:', creditos);
+        this.creditos = creditos;
+        this.creditoSelecionado = null; // ✅ Limpa detalhes ao mostrar tabela
+        this.carregando = false;
+        this.desbloquearCampoBusca();
+        this.cdr.detectChanges();
+        
+        if (creditos.length === 0) {
+          this.messageService.add({
+            severity: 'info',
+            summary: 'Nenhum resultado encontrado',
+            detail: `Nenhum crédito encontrado para a NFS-e: ${valor}`,
+          });
+        } else {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Consulta realizada',
+            detail: `${creditos.length} crédito(s) encontrado(s) para NFS-e: ${valor}`,
+          });
+        }
+      },
+      error: (error) => {
+        console.error('❌ Erro na consulta:', error);
+        this.carregando = false;
+        this.desbloquearCampoBusca();
+        this.cdr.detectChanges();
+        
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro na consulta',
+          detail: 'Não foi possível consultar os créditos. Tente novamente.',
         });
+      }
+    });
   }
 
   consultarPorCredito(valor: string): void {
-    const resultado = this.creditosMock.find(
-      (c) => c.numeroCredito === valor
-    );
-    resultado
-      ? (this.creditoSelecionado = resultado)
-      : this.messageService.add({
+    console.log('🔍 Consultando por número do crédito:', valor);
+
+    this.creditoService.buscarPorNumeroCredito(valor).subscribe({
+      next: (credito) => {
+        console.log('✅ Crédito encontrado:', credito);
+        this.creditoSelecionado = credito;
+        this.creditos = []; // ✅ Limpa tabela ao mostrar detalhes
+        this.carregando = false;
+        this.desbloquearCampoBusca();
+        this.cdr.detectChanges();
+        
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Crédito encontrado',
+          detail: `Crédito nº ${credito.numeroCredito} localizado`,
+        });
+      },
+      error: (error) => {
+        console.error('❌ Erro na consulta:', error);
+        this.carregando = false;
+        this.desbloquearCampoBusca();
+        this.cdr.detectChanges();
+        
+        const msg = error.status === 404 
+          ? `Crédito ${valor} não encontrado`
+          : 'Erro ao consultar crédito. Tente novamente.';
+          
+        this.messageService.add({
           severity: 'info',
           summary: 'Crédito não encontrado',
-          detail: `Número informado: ${valor}`,
+          detail: msg,
         });
+      }
+    });
   }
 
   limparConsulta(): void {
@@ -202,9 +217,11 @@ export class ConsultaCreditosComponent implements OnInit {
     this.creditos = [];
     this.creditoSelecionado = null;
     this.messageService.clear();
+    this.cdr.detectChanges(); // ✅ Força atualização da tela
   }
 
   formatarMoeda(valor: number): string {
+    if (valor == null) return 'R$ 0,00';
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL',
@@ -212,18 +229,28 @@ export class ConsultaCreditosComponent implements OnInit {
   }
 
   formatarData(data: string): string {
+    if (!data) return '-';
     return new Date(data).toLocaleDateString('pt-BR');
   }
 
   formatarPercentual(valor: number): string {
+    if (valor == null) return '0%';
     return `${valor.toFixed(1)}%`;
   }
 
-  getSeveridadeTipoCredito(tipo: string) {
+  getSeveridadeTipoCredito(tipo: string): string {
     return tipo === 'ISSQN' ? 'success' : 'info';
   }
 
-  getSeveridadeSimplesNacional(valor: string) {
-    return valor === 'Sim' ? 'success' : 'warn';
+  getSeveridadeSimplesNacional(valor: boolean): string {
+    return valor ? 'success' : 'warn';
+  }
+
+  private bloquearCampoBusca(): void {
+    this.form.get('valorBusca')?.disable({ emitEvent: false });
+  }
+
+  private desbloquearCampoBusca(): void {
+    this.form.get('valorBusca')?.enable({ emitEvent: false });
   }
 }

@@ -15,5 +15,5 @@ RUN rm /etc/nginx/conf.d/default.conf
 # Copia a nova configuração personalizada
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Copia os arquivos do Angular para o diretório padrão do NGINX
-COPY --from=builder /app/dist /usr/share/nginx/html
+# ⚠️ Copia os arquivos de build corretos (browser)
+COPY --from=builder /app/dist/gestiona-app/browser/consulta-creditos /usr/share/nginx/html

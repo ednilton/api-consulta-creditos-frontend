@@ -15,5 +15,6 @@ RUN rm /etc/nginx/conf.d/default.conf
 # Copia a nova configuração personalizada
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# ⚠️ Copia os arquivos de build corretos (browser)
-COPY --from=builder /app/dist/gestiona-app/browser/consulta-creditos /usr/share/nginx/html
+# ✅ Corrigido: copia o build final
+COPY --from=builder /app/dist/gestiona-app/browser /usr/share/nginx/html
+#COPY --from=builder /app/dist/gestiona-app /usr/share/nginx/html

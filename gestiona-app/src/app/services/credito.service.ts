@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from './../../../environments/environment';
+import { environment } from '../../../environments/environment';
 import { Credito } from '../models/credito.model';
 import { Observable, catchError, throwError, map } from 'rxjs';
 import { MessageService } from 'primeng/api';
@@ -11,7 +11,10 @@ import { MessageService } from 'primeng/api';
 export class CreditoService {
   private http = inject(HttpClient);
   private messageService = inject(MessageService);
-  private apiUrl = `${environment.apiUrl}/api/creditos`;
+  private apiUrl = `${environment.apiUrl}/api/creditos`; 
+  // http://localhost:8080/api/creditos 
+  // http://backend:8080/api/creditos
+
 
   constructor() { }
 

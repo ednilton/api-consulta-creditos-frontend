@@ -7,7 +7,7 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 To start a local development server, run:
 
 ```bash
-ng serve
+ng serve --host 0.0.0.0 --port 4200
 ```
 
 Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
@@ -31,7 +31,9 @@ ng generate --help
 To build the project run:
 
 ```bash
-ng build
+ng build --prod
+# ou
+ng build --configuration production
 ```
 
 This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
@@ -42,6 +44,17 @@ To execute unit tests with the [Karma](https://karma-runner.github.io) test runn
 
 ```bash
 ng test
+```
+
+# Servir os arquivos estáticos localmente para testar
+# Com http-server (instalar se não tiver)
+
+```bash
+npx http-server dist/ -p 8080
+```
+# Ou com serve
+```bash
+npx serve -s dist/ -l 8080
 ```
 
 ## Running end-to-end tests
@@ -57,3 +70,15 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+
+## Loading Docker Frontend container - Rebuild apenas o frontend:
+```bash
+docker-compose build --no-cache frontend
+```
+ou 
+```bash
+docker-compose up -d frontend
+```
+
+

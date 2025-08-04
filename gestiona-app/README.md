@@ -31,20 +31,16 @@ ng generate --help
 To build the project run:
 
 ```bash
-ng build --prod
-# ou
 ng build --configuration production
 ```
 
 This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
 
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
+## Use essa url para acesso local:
 ```bash
-ng test
+http://localhost:4200/consulta-creditos/consulta-creditos
 ```
+
 
 # Servir os arquivos estáticos localmente para testar
 # Com http-server (instalar se não tiver)
@@ -65,14 +61,10 @@ For end-to-end (e2e) testing, run:
 ng e2e
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
-
 
 ## Loading Docker Frontend container - Rebuild apenas o frontend:
+
+Subindo o container com o cache limpo:
 ```bash
 docker-compose build --no-cache frontend
 ```
@@ -81,4 +73,19 @@ ou
 docker-compose up -d frontend
 ```
 
+## Rodando testes unitários
 
+Para executar testes usando o [Karma](https://karma-runner.github.io),  use o comando a seguir:
+
+No componente consulta-creditos:
+```bash
+ng test --watch=false --browsers=ChromeHeadless
+```
+
+Na service de creditos:
+```bash
+ng test --include="**/credito.service.spec.ts" --watch=false --browsers=ChromeHeadless
+```
+
+Resultado do teste:
+![alt text](image.png)
